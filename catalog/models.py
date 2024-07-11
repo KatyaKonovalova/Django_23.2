@@ -58,7 +58,11 @@ class Product(models.Model):
         help_text="Укажите дату последнего изменения",
         blank=True, auto_now=True,
     )
-
+    views_counter = models.PositiveIntegerField(
+        verbose_name="Счетчик просмотров",
+        help_text="Укажите количество просмотров",
+        default=0
+    )
 
     class Meta:
         verbose_name = "Товар"
