@@ -51,23 +51,66 @@ class Product(models.Model):
         null=True,
     )
     created_at = models.DateField(
-        verbose_name="Дата создания", help_text="Укажите дату создания", blank=True, auto_now_add=True
+        verbose_name="Дата создания",
+        help_text="Укажите дату создания",
+        blank=True,
+        auto_now_add=True,
     )
     updated_at = models.DateField(
         verbose_name="Дата последнего изменения",
         help_text="Укажите дату последнего изменения",
-        blank=True, auto_now=True,
+        blank=True,
+        auto_now=True,
     )
     views_counter = models.PositiveIntegerField(
         verbose_name="Счетчик просмотров",
         help_text="Укажите количество просмотров",
-        default=0
+        default=0,
     )
 
     class Meta:
-        verbose_name = "Товар"
-        verbose_name_plural = "Товары"
+        verbose_name = "Продукт"
+        verbose_name_plural = "Продукты"
         ordering = ["name", "category", "description"]
 
     def __str__(self):
         return f"{self.name} - {self.price}"
+
+
+class Version(models.Model):
+    product = models.ForeignKey(
+        Product,
+        related_name="versions",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Продукт",
+        help_text="Выберите продукт",
+    )
+    version_number = models.CharField(
+        max_length=10,
+        verbose_name="Номер версии",
+        help_text="Введите номер версии",
+        null=True,
+        blank=True,
+    )
+    version_name = models.CharField(
+        max_length=100,
+        verbose_name="Название версии",
+        help_text="Введите название версии",
+        null=True,
+        blank=True,
+    )
+    is_version_active = models.BooleanField(
+        default=False,
+        verbose_name="Активная версия",
+        help_text="Является ли версия активной",
+    )
+
+    class Meta:
+        verbose_name = "Версия"
+        verbose_name_plural = "Версии"
+        ordering = ["version_number", "version_name"]
+
+    def __str__(self):
+        return self.version_name
