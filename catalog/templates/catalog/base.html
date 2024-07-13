@@ -189,10 +189,12 @@
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">Продукты</h1>
                 <p class="lead text-body-secondary">Самое лучшее для здорового и качественного питания</p>
+                {% if user.is_authenticated %}
                 <p>
                     <a class="btn btn-primary" href="{% url 'catalog:products_create' %}"
                        role="button">Создать продукт</a>
                 </p>
+                {% endif %}
             </div>
         </div>
     </section>

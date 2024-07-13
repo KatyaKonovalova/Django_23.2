@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 
 class Category(models.Model):
     name = models.CharField(
@@ -67,6 +69,14 @@ class Product(models.Model):
         help_text="Укажите количество просмотров",
         default=0,
     )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Владелец",
+        blank=True,
+        null=True,
+        related_name="products",
+    )
 
     class Meta:
         verbose_name = "Продукт"
@@ -114,3 +124,5 @@ class Version(models.Model):
 
     def __str__(self):
         return self.version_name
+
+

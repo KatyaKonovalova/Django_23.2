@@ -1,7 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Version
@@ -29,10 +30,17 @@ class ProductDetailView(DetailView):
         return self.object
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(CreateView, LoginRequiredMixin):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:products_list')
+
+    def form_valid(self, form):
+        product = form.save(commit=False)
+        product.owner = self.request.user
+        product.save()
+        product.owner.save()
+        return redirect('catalog:product_detail', product.pk)
 
 
 class ProductUpdateView(UpdateView):
@@ -62,8 +70,6 @@ class ProductUpdateView(UpdateView):
             return super().form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
-
-
 
 
 class ProductDeleteView(DeleteView):
