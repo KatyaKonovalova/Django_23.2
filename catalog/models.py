@@ -77,19 +77,16 @@ class Product(models.Model):
         null=True,
         related_name="products",
     )
-    is_published = models.BooleanField(
-        default=False,
-        verbose_name="Опубликован"
-    )
+    is_published = models.BooleanField(default=False, verbose_name="Опубликован")
 
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
         ordering = ["name", "category", "description"]
         permissions = [
-            ('can_edit_category', 'Can edit category'),
-            ('can_edit_description', 'Can edit derscription'),
-            ('can_cancel_publication', 'Can cancel publication'),
+            ("can_edit_category", "Can edit category"),
+            ("can_edit_description", "Can edit derscription"),
+            ("can_cancel_publication", "Can cancel publication"),
         ]
 
     def __str__(self):

@@ -15,32 +15,46 @@ class StyleFormMixin:
 class ProductForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProductModeratorForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Product
-        fields = ('description', 'category', 'is_published')
+        fields = ("description", "category", "is_published")
 
-    forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
+    forbidden_words = [
+        "казино",
+        "криптовалюта",
+        "крипта",
+        "биржа",
+        "дешево",
+        "бесплатно",
+        "обман",
+        "полиция",
+        "радар",
+    ]
 
     def clean_name(self):
-        cleaned_data = self.cleaned_data['name']
+        cleaned_data = self.cleaned_data["name"]
         for forbidden_word in self.forbidden_words:
             if forbidden_word in cleaned_data.lower():
-                raise forms.ValidationError(f'Наименование не должно содержать слово "{forbidden_word}"')
+                raise forms.ValidationError(
+                    f'Наименование не должно содержать слово "{forbidden_word}"'
+                )
         return cleaned_data
 
     def clean_description(self):
-        cleaned_data = self.cleaned_data['description']
+        cleaned_data = self.cleaned_data["description"]
         for forbidden_word in self.forbidden_words:
             if forbidden_word in cleaned_data.lower():
-                raise forms.ValidationError(f'Описание не должно содержать слово "{forbidden_word}"')
+                raise forms.ValidationError(
+                    f'Описание не должно содержать слово "{forbidden_word}"'
+                )
         return cleaned_data
 
 
 class VersionForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Version
-        fields = '__all__'
+        fields = "__all__"
