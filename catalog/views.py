@@ -12,6 +12,7 @@ from catalog.services import get_products_from_cache
 
 class ProductListView(ListView):
     model = Product
+    template_name = 'catalog/product_list.html'
 
     def get_queryset(self):
         return get_products_from_cache()
@@ -20,13 +21,30 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView, LoginRequiredMixin):
     model = Product
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner:
-            self.object.views_counter += 1
-            self.object.save()
-            return self.object
-        raise PermissionDenied
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        ProductFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = ProductFormset(self.request.POST)
+        else:
+            context_data['formset'] = ProductFormset()
+        return context_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+    # def get_object(self, queryset=None):
+    #     self.object = super().get_object(queryset)
+    #     if self.request.user == self.object.owner:
+    #         self.object.views_counter += 1
+    #         self.object.save()
+    #         return self.object
+    #     raise PermissionDenied
 
 
 class ProductCreateView(CreateView, LoginRequiredMixin):
